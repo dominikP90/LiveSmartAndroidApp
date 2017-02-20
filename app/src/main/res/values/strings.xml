@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">LiveSmart</string>
+
+    <string-array name="Rooms">
+        <item>Bathroom</item>
+        <item>Bedroom</item>
+        <item>Dining Room</item>
+        <item>Garage</item>
+        <item>Kitchen</item>
+        <item>Library</item>
+        <item>Living Room</item>
+    </string-array>
+
+    <string-array name="Types">
+        <item>Alarms</item>
+        <item>Cameras</item>
+        <item>Doors</item>
+        <item>Heating</item>
+        <item>Lightning</item>
+        <item>Music</item>
+        <item>Window</item>
+    </string-array>
+
+</resources>

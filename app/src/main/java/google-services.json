@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "416898904175",
+    "firebase_url": "https://livesmart-1c226.firebaseio.com",
+    "project_id": "livesmart-1c226",
+    "storage_bucket": "livesmart-1c226.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416898904175:android:5da5d58f512cef5c",
+        "android_client_info": {
+          "package_name": "livesmart.com.livesmart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "416898904175-fldhc5o0aoi09c3mvqop1bsn5sres5jv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "livesmart.com.livesmart",
+            "certificate_hash": "DA12D8CA0F27A7A4541524ABE3AF6C5CCAAA4DCE"
+          }
+        },
+        {
+          "client_id": "416898904175-luucq9im6rbmg9ndpvichl5ta6nkg7oh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAh3J0UjBCP6Thz4U3FbU7o-433CjiEyY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "416898904175-luucq9im6rbmg9ndpvichl5ta6nkg7oh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
