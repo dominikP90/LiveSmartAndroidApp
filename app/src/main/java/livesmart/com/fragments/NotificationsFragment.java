@@ -1,6 +1,9 @@
 package livesmart.com.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -29,8 +32,13 @@ import static livesmart.com.main.LiveSmartMain.notifications;
 public class NotificationsFragment extends ListFragment implements AdapterView.OnItemClickListener{
 
     //private ArrayList<Notification> notifications2;
-    private ListView listView;
     private NotificationAdapter notificationsAdapter;
+    BroadcastReceiver broadCastNewMessage = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            notificationsAdapter.notifyDataSetChanged();
+        }
+    };
 
     public NotificationsFragment() {}
 
@@ -49,6 +57,8 @@ public class NotificationsFragment extends ListFragment implements AdapterView.O
         notificationsAdapter = new NotificationAdapter(getActivity(), android.R.layout.simple_list_item_1, notifications);
         setListAdapter(notificationsAdapter);
         getListView().setOnItemClickListener(this);
+
+        getActivity().registerReceiver(this.broadCastNewMessage, new IntentFilter("newNotification"));
     }
 
     @Override
@@ -57,5 +67,11 @@ public class NotificationsFragment extends ListFragment implements AdapterView.O
         Intent intent = new Intent(getActivity(), NotificationDetailView.class);
         intent.putExtra("NOTIFICATION", notifications.get(position));
         startActivity(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(broadCastNewMessage);
     }
 }

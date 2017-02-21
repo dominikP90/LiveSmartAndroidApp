@@ -18,26 +18,17 @@ import android.widget.Toast;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import livesmart.com.dataModel.Notification;
 import livesmart.com.restClient.LivesmartWebserviceInterface;
 import livesmart.com.utility.FirebaseConfig;
 import livesmart.com.utility.FirebaseNotificationUtils;
-import livesmart.com.restClient.Communicator;
 import livesmart.com.restClient.LoginResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-import static android.webkit.ConsoleMessage.MessageLevel.LOG;
-import static livesmart.com.main.LiveSmartMain.notifications;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String SERVER_URL = "http://192.168.1.19:8080/";
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private  Button loginButton;
 
     @Override
@@ -60,25 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         //txtRegId = (TextView) findViewById(R.id.txt_reg_id);
         //txtMessage = (TextView) findViewById(R.id.txt_push_message);
-
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                // checking for type intent filter
-                if (intent.getAction().equals(FirebaseConfig.REGISTRATION_COMPLETE)) {
-                    // fcm successfully registered
-                    // now subscribe to `global` topic to receive app wide notifications
-                    FirebaseMessaging.getInstance().subscribeToTopic(FirebaseConfig.TOPIC_GLOBAL);
-
-                } else if (intent.getAction().equals(FirebaseConfig.PUSH_NOTIFICATION)) {
-                    // new push notification is received
-                    String message = intent.getStringExtra("message");
-                    Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
-                    //txtMessage.setText(message);
-                }
-            }
-        };
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,29 +116,6 @@ public class MainActivity extends AppCompatActivity {
             apiKey.setText(regId);
         }
         view.invalidate();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // register FCM registration complete receiver
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(FirebaseConfig.REGISTRATION_COMPLETE));
-
-        // register new push message receiver
-        // by doing this, the activity will be notified each time a new message arrives
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(FirebaseConfig.PUSH_NOTIFICATION));
-
-        // clear the notification area when the app is opened
-        FirebaseNotificationUtils.clearNotifications(getApplicationContext());
-    }
-
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-        super.onPause();
     }
 
 

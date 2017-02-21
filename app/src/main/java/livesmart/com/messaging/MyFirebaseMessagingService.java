@@ -58,13 +58,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendNotification(Notification n) {
         Intent intent = new Intent(this, LiveSmartMain.class);
         //Add Notification
-        LiveSmartMain.notifications.add(n);
+        LiveSmartMain.notifications.add(0, n);
         LiveSmartMain.showNotificationTab = true;
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("NOTIFICATION", n);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
+
+        this.sendBroadcast(new Intent().setAction("newNotification"));
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)

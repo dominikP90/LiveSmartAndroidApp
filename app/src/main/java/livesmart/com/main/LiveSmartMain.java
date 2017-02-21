@@ -52,16 +52,10 @@ public class LiveSmartMain extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.smart_home_view);
 
+        /** Testdata */
         setUpTestData();
-        //Check for Notification
-//        Notification notificationIntent = (Notification) getIntent().getSerializableExtra("NOTIFICATION");
-//        if (notificationIntent != null) {
-//            notifications.add(notificationIntent);
-//        }
 
-        /**
-         * Code for tabs layout
-         */
+        /** Code for tabs layout */
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -72,10 +66,6 @@ public class LiveSmartMain extends AppCompatActivity{
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-        /**
-         *
-         */
     }
 
     /**

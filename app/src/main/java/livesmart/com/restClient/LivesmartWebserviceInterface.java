@@ -18,8 +18,8 @@ import retrofit2.http.Path;
  */
 public interface LivesmartWebserviceInterface {
 
-    //static final String SERVER_URL = "http://192.168.1.19:8080/";
-    static final String SERVER_URL = "http://131.159.214.236:8080/";
+    static final String SERVER_URL = "http://192.168.1.22:8080/";
+    //static final String SERVER_URL = "http://131.159.214.236:8080/";
     /**
      *User login
      */
