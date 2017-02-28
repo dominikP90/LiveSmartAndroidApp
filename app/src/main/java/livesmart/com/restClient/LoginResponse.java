@@ -7,10 +7,12 @@ package livesmart.com.restClient;
 public class LoginResponse {
     private String result;
     private String message;
+    private int userId;
 
-    public LoginResponse(String _result, String _message) {
+    public LoginResponse(String _result, String _message, int _userId) {
         this.result = _result;
         this.message = _message;
+        this.userId = _userId;
     }
 
     /**
@@ -36,5 +38,13 @@ public class LoginResponse {
      */
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }
