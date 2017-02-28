@@ -1,5 +1,7 @@
 package livesmart.com.main;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,7 +11,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,15 +23,20 @@ import livesmart.com.dataModel.MusicDevice;
 import livesmart.com.dataModel.Notification;
 import livesmart.com.dataModel.Room;
 import livesmart.com.dataModel.Severity;
-import livesmart.com.dataModel.SmartHome;
 import livesmart.com.dataModel.StovenDevice;
 import livesmart.com.dataModel.TypeOverview;
+import livesmart.com.databaseAccess.DeviceModel;
+import livesmart.com.databaseAccess.RoomModel;
 import livesmart.com.fragments.NotificationsFragment;
 import livesmart.com.fragments.RoomsFragment;
 import livesmart.com.fragments.TypesFragment;
+import livesmart.com.restClient.LivesmartWebserviceInterface;
+import livesmart.com.restClient.UserPOJO;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-import static android.R.id.list;
-import static android.os.Build.VERSION_CODES.M;
+import static livesmart.com.main.MainActivity.retrofit;
 
 /**
  * Created by Dominik Poppek on 16.12.2016.
@@ -38,10 +44,11 @@ import static android.os.Build.VERSION_CODES.M;
 
 public class LiveSmartMain extends AppCompatActivity{
 
-    public static ArrayList<Room> rooms;
-    public static ArrayList<TypeOverview> types;
+    public static ArrayList<Room> rooms = new ArrayList<>();
+    public static ArrayList<TypeOverview> types = new ArrayList<>();
     public static ArrayList<Notification> notifications = new ArrayList<>();
     public static boolean showNotificationTab = false;
+    private boolean isFirstLogin;
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -51,6 +58,13 @@ public class LiveSmartMain extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.smart_home_view);
+
+        isFirstLogin = (boolean) getIntent().getSerializableExtra("FIRSTLOGIN");
+        if (isFirstLogin) {
+            loadUserdataFirstTime();
+        } else {
+            //TODO load data from db
+        }
 
         /** Testdata */
         setUpTestData();
@@ -66,6 +80,61 @@ public class LiveSmartMain extends AppCompatActivity{
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    /**
+     * Requests userdata from webservice and saves it into database
+     */
+    private void loadUserdataFirstTime() {
+            SharedPreferences prefs = getSharedPreferences("livesmart.com", Context.MODE_PRIVATE);
+            int userIdSharedPref = prefs.getInt("livesmart.com.userId", -1);
+
+            //Load userdata from webservice
+            LivesmartWebserviceInterface livesmartWebservice = retrofit.create(LivesmartWebserviceInterface.class);
+
+            Call<UserPOJO> callGetUserDataById = livesmartWebservice.getUserbyUserId(userIdSharedPref);
+
+            callGetUserDataById.enqueue(new Callback<UserPOJO>() {
+                @Override
+                public void onResponse(Call<UserPOJO> call, Response<UserPOJO> response) {
+                    UserPOJO callResponse = response.body();
+                    //Write userData into database
+                    // writeUserdataToDatabase(callResponse);
+                }
+
+                @Override
+                public void onFailure(Call<UserPOJO> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+    }
+
+    /**
+     * Writes userData into database
+     * @param userData
+     */
+    private void writeUserdataToDatabase(UserPOJO userData) {
+        for (Room room : userData.getRooms()) {
+            //Save room
+            RoomModel rm = new RoomModel();
+            rm.setRoomID(room.getRoomID());
+            rm.setRoomName(room.getRoomName());
+            rm.setIcon_path(room.getIcon_path());
+            rm.save();
+            //Save devices for room
+            for (Device device : room.getDeviceList()) {
+                DeviceModel dm = new DeviceModel();
+                dm.setDeviceID(device.getDeviceID());
+                dm.setDeviceName(device.getDeviceName());
+                dm.setDeviceMAC(device.getDeviceMAC());
+                dm.setDeviceType(device.getClass().toString());
+                dm.setDeviceTurnedOn(device.isDeviceTurnedOn());
+                dm.setDeviceSeekerValue(device.getDeviceSeekerValue());
+                dm.roomModel = rm;
+                dm.save();
+            }
+
+        }
     }
 
     /**
@@ -163,8 +232,8 @@ public class LiveSmartMain extends AppCompatActivity{
         s1.setDeviceName("Kitchen Stoven");
         s1.setDeviceType(DeviceType.STOVEN);
         s1.setRoomName(kitchen.getRoomName());
-        s1.setHotplateTurnedOn(false);
-        s1.setStoveTurnedOn(false);
+        s1.setDeviceTurnedOn(true);
+        s1.setDeviceSeekerValue(70);
 
 
         /** Bathroom add devices */
