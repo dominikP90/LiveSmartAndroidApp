@@ -12,6 +12,8 @@ public class Device implements Serializable {
     private String deviceName;
     private String deviceMAC;
     private DeviceType deviceType;
+    public boolean deviceTurnedOn;
+    private int deviceSeekerValue;
     private String roomName;
 
     /**
@@ -61,6 +63,22 @@ public class Device implements Serializable {
      */
     public void setDeviceType(DeviceType deviceType) {
         this.deviceType = deviceType;
+    }
+
+    public boolean isDeviceTurnedOn() {
+        return deviceTurnedOn;
+    }
+
+    public void setDeviceTurnedOn(boolean deviceTurnedOn) {
+        this.deviceTurnedOn = deviceTurnedOn;
+    }
+
+    public int getDeviceSeekerValue() {
+        return deviceSeekerValue;
+    }
+
+    public void setDeviceSeekerValue(int deviceSeekerValue) {
+        this.deviceSeekerValue = deviceSeekerValue;
     }
 
     public String getRoomName() {

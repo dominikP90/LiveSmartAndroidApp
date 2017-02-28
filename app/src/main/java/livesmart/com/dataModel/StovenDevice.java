@@ -9,20 +9,17 @@ import java.io.Serializable;
 public class StovenDevice extends Device implements Serializable {
     private final String iconPath = "ic_date_range_black_18dp";
 
-    private boolean hotplateTurnedOn;
-    private boolean stoveTurnedOn;
-
     /**
      * Switch hotplate
      * @return
      */
     private void switchHotplate() {
-            if (hotplateTurnedOn) {
+            if (isDeviceTurnedOn()) {
                 //TODO Send action to server, if successful switch
-                hotplateTurnedOn = false;
+                deviceTurnedOn = false;
             } else {
                 //TODO Send action to server, if successful switch
-                hotplateTurnedOn = true;
+                deviceTurnedOn = true;
             }
         }
 
@@ -30,33 +27,8 @@ public class StovenDevice extends Device implements Serializable {
          * Switch hotplate
          * @return
          */
-    private void switchStoven() {
-
-        if (stoveTurnedOn) {
-            //TODO Send action to server, if successful switch
-            stoveTurnedOn = false;
-        } else {
-            //TODO Send action to server, if successful switch
-            stoveTurnedOn = true;
-        }
-    }
 
     public String getIconPath() {
         return iconPath; }
 
-    public boolean isHotplateTurnedOn() {
-        return hotplateTurnedOn;
-    }
-
-    public void setHotplateTurnedOn(boolean hotplateTurnedOn) {
-        this.hotplateTurnedOn = hotplateTurnedOn;
-    }
-
-    public boolean isStoveTurnedOn() {
-        return stoveTurnedOn;
-    }
-
-    public void setStoveTurnedOn(boolean stoveTurnedOn) {
-        this.stoveTurnedOn = stoveTurnedOn;
-    }
 }
