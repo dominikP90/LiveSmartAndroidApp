@@ -1,6 +1,8 @@
 package livesmart.com.main;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -33,6 +35,7 @@ import livesmart.com.dataModel.WindowDevice;
 import livesmart.com.restClient.LivesmartWebserviceInterface;
 import livesmart.com.restClient.LoginResponse;
 import livesmart.com.restClient.RuntimeTypeAdapterFactory;
+import livesmart.com.restClient.UserPOJO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     public static Retrofit retrofit;
-    public static ArrayList<Room> rooms = new ArrayList<>();
-    public static ArrayList<TypeOverview> types = new ArrayList<>();
     private  Button loginButton;
 
     @Override
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Initalize retrofit webservice
         initalizeWebservice();
-        LivesmartWebserviceInterface livesmartWebservice = retrofit.create(LivesmartWebserviceInterface.class);
+        final LivesmartWebserviceInterface livesmartWebservice = retrofit.create(LivesmartWebserviceInterface.class);
 
         // Create a call instance for performing user log-in
         Call<LoginResponse> call = livesmartWebservice.postLogin(username, password);
@@ -87,10 +88,27 @@ public class MainActivity extends AppCompatActivity {
                 LoginResponse callResponse = response.body();
                 //If correct credentials
                 if (callResponse.getResult().equals("SUCCESS")){
-                    Toast.makeText(getApplicationContext(),
-                            "Login successful. Redirecting...",Toast.LENGTH_SHORT).show();
+                    //Load SharedPreferences & check if userId (if -1 then first login)
+                    final SharedPreferences prefs = getSharedPreferences("livesmart.com", Context.MODE_PRIVATE);
+                    final int userIdSharedPref = prefs.getInt("livesmart.com.userId", -1);
+                    final int userIdcallResponse = callResponse.getUserId();
+
                     Intent intent = new Intent(getApplicationContext(), LiveSmartMain.class);
+                    // first login if -1?
+                    if (userIdSharedPref == -1) {
+                        Toast.makeText(getApplicationContext(),
+                                "Login successful. Your SmartHome will be set up...",Toast.LENGTH_SHORT).show();
+                        intent.putExtra("FIRSTLOGIN", true);
+                    } else {
+                        Toast.makeText(getApplicationContext(),
+                                "Login successful. Redirecting...",Toast.LENGTH_SHORT).show();
+                        intent.putExtra("FIRSTLOGIN", false);
+                    }
+
+                    //Save userId
+                    prefs.edit().putInt("livesmart.com.userId", userIdcallResponse).commit();
                     startActivity(intent);
+
                 }
                 //Wrong credentials
                 else {
