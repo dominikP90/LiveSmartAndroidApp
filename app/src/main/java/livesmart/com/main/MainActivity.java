@@ -1,34 +1,52 @@
 package livesmart.com.main;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 
+import java.lang.reflect.Type;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+
+import livesmart.com.dataModel.AlarmDevice;
+import livesmart.com.dataModel.CameraDevice;
+import livesmart.com.dataModel.Device;
+import livesmart.com.dataModel.DoorDevice;
+import livesmart.com.dataModel.HeatingDevice;
+import livesmart.com.dataModel.LightningDevice;
+import livesmart.com.dataModel.MusicDevice;
+import livesmart.com.dataModel.Room;
+import livesmart.com.dataModel.StovenDevice;
+import livesmart.com.dataModel.TypeOverview;
+import livesmart.com.dataModel.WindowDevice;
 import livesmart.com.restClient.LivesmartWebserviceInterface;
-import livesmart.com.utility.FirebaseConfig;
-import livesmart.com.utility.FirebaseNotificationUtils;
 import livesmart.com.restClient.LoginResponse;
+import livesmart.com.restClient.RuntimeTypeAdapterFactory;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static livesmart.com.restClient.LivesmartWebserviceInterface.SERVER_URL;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    public static Retrofit retrofit;
+    public static ArrayList<Room> rooms = new ArrayList<>();
+    public static ArrayList<TypeOverview> types = new ArrayList<>();
     private  Button loginButton;
 
     @Override
@@ -37,21 +55,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.livesmart_login);
 
         loginButton = (Button) findViewById(R.id.loginButton);
-
-        //Put Firebase-API-Token into SharedPreferences if it's not already saved
-        Log.e(TAG, "Firebase-Token: " + FirebaseInstanceId.getInstance().getToken());
-        SharedPreferences pref = getApplicationContext().getSharedPreferences(FirebaseConfig.SHARED_PREF, 0);
-        String regId = pref.getString("regId", null);
-        if (regId == null) {
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putString("regId", FirebaseInstanceId.getInstance().getToken());
-            editor.commit();
-        }
-
-
-        //txtRegId = (TextView) findViewById(R.id.txt_reg_id);
-        //txtMessage = (TextView) findViewById(R.id.txt_push_message);
-
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,8 +74,9 @@ public class MainActivity extends AppCompatActivity {
         String username = enterUsername.getText().toString();
         String password = enterPassword.getText().toString();
 
-        // Create an instance of LivesmartWebservice interface.
-        LivesmartWebserviceInterface livesmartWebservice = LivesmartWebserviceInterface.retrofit.create(LivesmartWebserviceInterface.class);
+        // Initalize retrofit webservice
+        initalizeWebservice();
+        LivesmartWebserviceInterface livesmartWebservice = retrofit.create(LivesmartWebserviceInterface.class);
 
         // Create a call instance for performing user log-in
         Call<LoginResponse> call = livesmartWebservice.postLogin(username, password);
@@ -102,21 +106,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Show Firebase-API-Key for testing purpose
-     * @param view
+     * Initalize retrofit REST-webservice
      */
-    public void onClickCancelButton(View view) {
-        TextView apiKey = (TextView) findViewById(R.id.apiKey);
+    private Retrofit initalizeWebservice() {
+        // Creates the json object which will manage the information received
+        GsonBuilder builder = new GsonBuilder();
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences(FirebaseConfig.SHARED_PREF, 0);
-        String regId = pref.getString("regId", null);
-        if (regId == null) {
-            apiKey.setText(FirebaseInstanceId.getInstance().getToken());
-        } else {
-            apiKey.setText(regId);
-        }
-        view.invalidate();
+        // adding all different container classes with their flag to deserialize polymorph object list
+        final RuntimeTypeAdapterFactory<Device> typeFactory = RuntimeTypeAdapterFactory
+                .of(Device.class, "deviceType") // Here you specify which is the parent class and what field particularizes the child class.
+                .registerSubtype(AlarmDevice.class, "ALARM") // if the flag equals the class name, you can skip the second parameter. This is only necessary, when the "type" field does not equal the class name.
+                .registerSubtype(CameraDevice.class, "CAMERA")
+                .registerSubtype(DoorDevice.class, "DOOR")
+                .registerSubtype(HeatingDevice.class, "HEATING")
+                .registerSubtype(LightningDevice.class, "LIGHTNING")
+                .registerSubtype(MusicDevice.class, "MUSIC")
+                .registerSubtype(StovenDevice.class, "STOVEN")
+                .registerSubtype(WindowDevice.class, "WINDOW");
+
+        builder.registerTypeAdapterFactory(typeFactory);
+
+        // Register an adapter to manage the date types as long values
+        builder.registerTypeAdapter(Timestamp.class, new JsonDeserializer<Timestamp>() {
+            public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return new Timestamp(json.getAsJsonPrimitive().getAsLong());
+            }
+        });
+        Gson gson = builder.create();
+        //Create Retrofit instance with costume timestamp adapter
+        retrofit = new Retrofit.Builder()
+                .baseUrl(SERVER_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        return retrofit;
     }
-
 
 }
