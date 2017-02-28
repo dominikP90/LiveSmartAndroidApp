@@ -1,25 +1,21 @@
 package livesmart.com.fragments;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import livesmart.com.main.R;
-import livesmart.com.main.RoomDevicesView;
 import livesmart.com.main.TypeDevicesView;
-import livesmart.com.utility.RoomsAdapter;
 import livesmart.com.utility.TypesAdapter;
 
-import static livesmart.com.main.LiveSmartMain.rooms;
 import static livesmart.com.main.LiveSmartMain.types;
+
 
 /**
  * Created by Dominik Poppek on 16.12.2016.

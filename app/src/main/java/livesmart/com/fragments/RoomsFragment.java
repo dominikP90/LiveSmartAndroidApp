@@ -1,25 +1,14 @@
 package livesmart.com.fragments;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
-import livesmart.com.dataModel.Device;
-import livesmart.com.dataModel.DeviceType;
-import livesmart.com.dataModel.HeatingDevice;
-import livesmart.com.dataModel.LightningDevice;
-import livesmart.com.dataModel.MusicDevice;
-import livesmart.com.dataModel.Room;
 import livesmart.com.main.R;
 import livesmart.com.main.RoomDevicesView;
 import livesmart.com.utility.RoomsAdapter;
