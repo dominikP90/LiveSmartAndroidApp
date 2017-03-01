@@ -8,21 +8,18 @@ import java.io.Serializable;
 
 public class HeatingDevice extends Device implements Serializable{
     private final String iconPath = "ic_brightness_low_black_18dp";
-    private int currentTemp;
 
+    public HeatingDevice(int deviceID, String deviceName, String deviceMAC, DeviceType deviceType, boolean deviceTurnedOn,
+                         int deviceSeekerValue, String roomName) {
+        this.setDeviceID(deviceID);
+        this.setDeviceName(deviceName);
+        this.setDeviceMAC(deviceMAC);
+        this.setDeviceType(deviceType);
+        this.setDeviceTurnedOn(deviceTurnedOn);
+        this.setDeviceSeekerValue(deviceSeekerValue);
+        this.setRoomName(roomName);
+    }
 
-    /**
-     * @return the currentTemp
-     */
-    public int getCurrentTemp() {
-        return currentTemp;
-    }
-    /**
-     * @param currentTemp the currentTemp to set
-     */
-    public void setCurrentTemp(int currentTemp) {
-        this.currentTemp = currentTemp;
-    }
 
     public String getIconPath() {
         return iconPath;
