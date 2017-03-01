@@ -9,6 +9,8 @@ import java.io.Serializable;
 public class HeatingDevice extends Device implements Serializable{
     private final String iconPath = "ic_brightness_low_black_18dp";
 
+    public HeatingDevice() {}
+
     public HeatingDevice(int deviceID, String deviceName, String deviceMAC, DeviceType deviceType, boolean deviceTurnedOn,
                          int deviceSeekerValue, String roomName) {
         this.setDeviceID(deviceID);

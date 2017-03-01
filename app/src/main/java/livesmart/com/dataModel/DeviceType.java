@@ -5,5 +5,5 @@ package livesmart.com.dataModel;
  */
 
 public enum DeviceType {
-    ALARM, CAMERA, DOOR, HEATING, LIGHTNING, MUSIC, STOVEN, WINDOW
+    ALARM, CAMERA, DOOR, HEATING, LIGHTNING, MUSIC, STOVE, WINDOW
 }

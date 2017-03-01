@@ -7,6 +7,8 @@ package livesmart.com.dataModel;
 public class WindowDevice extends Device {
     private final String iconPath = "ic_cloud_black_18dp";
 
+    public WindowDevice() {}
+
     public WindowDevice(int deviceID, String deviceName, String deviceMAC, DeviceType deviceType, boolean deviceTurnedOn,
                         int deviceSeekerValue, String roomName) {
         this.setDeviceID(deviceID);

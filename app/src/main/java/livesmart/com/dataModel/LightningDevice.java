@@ -9,6 +9,8 @@ import java.io.Serializable;
 public class LightningDevice extends Device implements Serializable {
     private final String iconPath = "ic_lightbulb_outline_black_18dp";
 
+    public LightningDevice() {}
+
     public LightningDevice(int deviceID, String deviceName, String deviceMAC, DeviceType deviceType, boolean deviceTurnedOn,
                            int deviceSeekerValue, String roomName) {
         this.setDeviceID(deviceID);

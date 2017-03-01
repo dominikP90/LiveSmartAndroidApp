@@ -9,6 +9,8 @@ import java.io.Serializable;
 public class CameraDevice extends Device implements Serializable {
     private final String iconPath = "ic_videocam_black_18dp";
 
+    public CameraDevice() {}
+
     public CameraDevice(int deviceID, String deviceName, String deviceMAC, DeviceType deviceType, boolean deviceTurnedOn,
                         int deviceSeekerValue, String roomName) {
         this.setDeviceID(deviceID);
