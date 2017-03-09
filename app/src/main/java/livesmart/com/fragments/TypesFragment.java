@@ -3,11 +3,11 @@ package livesmart.com.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import livesmart.com.main.R;
@@ -23,8 +23,8 @@ import static livesmart.com.main.LiveSmartMain.types;
 
 public class TypesFragment extends ListFragment implements AdapterView.OnItemClickListener {
 
-    private ListView listView;
     private TypesAdapter typesAdapter;
+    private boolean firstCreated = true;
 
     public TypesFragment() {}
 
@@ -42,13 +42,25 @@ public class TypesFragment extends ListFragment implements AdapterView.OnItemCli
         typesAdapter = new TypesAdapter(getActivity(), android.R.layout.simple_list_item_1, types);
         setListAdapter(typesAdapter);
         getListView().setOnItemClickListener(this);
+        firstCreated = false;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-        Toast.makeText(getActivity(), "Item: " + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), types.get(position).getTypesName() + " selected...", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(), TypeDevicesView.class);
         intent.putExtra("TYPE", types.get(position));
         startActivity(intent);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser && !firstCreated) {
+            typesAdapter = new TypesAdapter(getActivity(), android.R.layout.simple_list_item_1, types);
+            setListAdapter(typesAdapter);
+            getListView().setOnItemClickListener(this);
+        }
     }
 }

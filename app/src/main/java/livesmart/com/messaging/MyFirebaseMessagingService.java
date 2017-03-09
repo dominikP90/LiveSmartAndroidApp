@@ -23,11 +23,9 @@ import java.util.Map;
 import livesmart.com.dataModel.DeviceType;
 import livesmart.com.dataModel.Notification;
 import livesmart.com.dataModel.Severity;
-import livesmart.com.dataModel.StovenDevice;
+import livesmart.com.dataModel.StoveDevice;
 import livesmart.com.main.LiveSmartMain;
 import livesmart.com.utility.FirebaseNotificationUtils;
-
-import static android.R.attr.data;
 
 /**
  * Created by Dominik Poppek on 11.01.2017.
@@ -152,14 +150,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         e.printStackTrace();
                     } */
         //Testdevice
-        StovenDevice s1 = new StovenDevice();
+        StoveDevice s1 = new StoveDevice();
         s1.setDeviceID(56);
         s1.setDeviceMAC("00:80:41:ae:fd:7e");
         s1.setDeviceName("Kitchen Stoven");
-        s1.setDeviceType(DeviceType.STOVEN);
+        s1.setDeviceType(DeviceType.STOVE);
         s1.setRoomName("Kitchen");
-        s1.setHotplateTurnedOn(false);
-        s1.setStoveTurnedOn(false);
+        s1.setDeviceTurnedOn(true);
+        s1.setDeviceSeekerValue(70);
         n.setDevice(s1);
         return n;
     }

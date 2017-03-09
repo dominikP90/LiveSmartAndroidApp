@@ -1,6 +1,7 @@
 package livesmart.com.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -10,21 +11,28 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+
+import com.activeandroid.query.Select;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import livesmart.com.dataModel.AlarmDevice;
+import livesmart.com.dataModel.CameraDevice;
 import livesmart.com.dataModel.Device;
 import livesmart.com.dataModel.DeviceType;
+import livesmart.com.dataModel.DoorDevice;
 import livesmart.com.dataModel.HeatingDevice;
 import livesmart.com.dataModel.LightningDevice;
 import livesmart.com.dataModel.MusicDevice;
 import livesmart.com.dataModel.Notification;
 import livesmart.com.dataModel.Room;
 import livesmart.com.dataModel.Severity;
-import livesmart.com.dataModel.StovenDevice;
+import livesmart.com.dataModel.StoveDevice;
 import livesmart.com.dataModel.TypeOverview;
+import livesmart.com.dataModel.WindowDevice;
 import livesmart.com.databaseAccess.DeviceModel;
 import livesmart.com.databaseAccess.RoomModel;
 import livesmart.com.fragments.NotificationsFragment;
@@ -61,13 +69,17 @@ public class LiveSmartMain extends AppCompatActivity{
 
         isFirstLogin = (boolean) getIntent().getSerializableExtra("FIRSTLOGIN");
         if (isFirstLogin) {
-            loadUserdataFirstTime();
+            getUserdataFirstTime();
         } else {
-            //TODO load data from db
+            /** Load userdata */
+            loadUserDataFromDatabase();
         }
 
+
+
         /** Testdata */
-        setUpTestData();
+
+        //setUpTestData();
 
         /** Code for tabs layout */
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -83,9 +95,83 @@ public class LiveSmartMain extends AppCompatActivity{
     }
 
     /**
+     * Loads rooms and devices from database and fill the corresponding Arraylists rooms + types
+     */
+    private void loadUserDataFromDatabase() {
+        List<RoomModel> roomModelList = new Select().from(RoomModel.class).execute();
+        //Typeoverview must match Rooms-/TypesDeviceDetailView -> onRespond -> Update ArrayLists
+        TypeOverview alarms = (new TypeOverview(1, "Alarmdevices", "ic_notifications_black_18dp"));
+        TypeOverview cameras = (new TypeOverview(2, "Cameradevices", "ic_videocam_black_18dp"));
+        TypeOverview doors = (new TypeOverview(3, "Doordevices", "ic_vpn_key_black_18dp"));
+        TypeOverview heatings = (new TypeOverview(4, "Heatingdevices", "ic_brightness_low_black_18dp"));
+        TypeOverview lightnings = (new TypeOverview(5, "Lightningdevices", "ic_lightbulb_outline_black_18dp"));
+        TypeOverview musics = (new TypeOverview(6, "Musicdevices", "ic_queue_music_black_18dp"));
+        TypeOverview stoves = (new TypeOverview(7, "Stovedevices", "ic_date_range_black_18dp"));
+        TypeOverview windows = (new TypeOverview(8, "Windowdevices", "ic_cloud_black_18dp"));
+
+        for (RoomModel rm : roomModelList) {
+            Room room = new Room(rm.getRoomID(), rm.getRoomName(), rm.getIcon_path());
+            List<DeviceModel> deviceModelList = rm.getDeviceModels();
+            for(DeviceModel dm : deviceModelList) {
+                //Check for type
+                if(dm.getDeviceType().equals("AlarmDevice")) {
+                    AlarmDevice d = new AlarmDevice(dm.getDeviceID(), dm.getDeviceName(), dm.getDeviceMAC(), DeviceType.ALARM,
+                                                    dm.isDeviceTurnedOn(), dm.getDeviceSeekerValue(), rm.getRoomName());
+                    alarms.getDeviceList().add(d);
+                    room.getDeviceList().add(d);
+                } else if (dm.getDeviceType().equals("CameraDevice")) {
+                    CameraDevice d = new CameraDevice(dm.getDeviceID(), dm.getDeviceName(), dm.getDeviceMAC(), DeviceType.CAMERA,
+                            dm.isDeviceTurnedOn(), dm.getDeviceSeekerValue(), rm.getRoomName());
+                    cameras.getDeviceList().add(d);
+                    room.getDeviceList().add(d);
+                } else if (dm.getDeviceType().equals("DoorDevice")) {
+                    DoorDevice d = new DoorDevice(dm.getDeviceID(), dm.getDeviceName(), dm.getDeviceMAC(), DeviceType.DOOR,
+                            dm.isDeviceTurnedOn(), dm.getDeviceSeekerValue(), rm.getRoomName());
+                    doors.getDeviceList().add(d);
+                    room.getDeviceList().add(d);
+                } else if (dm.getDeviceType().equals("HeatingDevice")) {
+                    HeatingDevice d = new HeatingDevice(dm.getDeviceID(), dm.getDeviceName(), dm.getDeviceMAC(), DeviceType.HEATING,
+                            dm.isDeviceTurnedOn(), dm.getDeviceSeekerValue(), rm.getRoomName());
+                    heatings.getDeviceList().add(d);
+                    room.getDeviceList().add(d);
+                } else if (dm.getDeviceType().equals("LightningDevice")) {
+                    LightningDevice d = new LightningDevice(dm.getDeviceID(), dm.getDeviceName(), dm.getDeviceMAC(), DeviceType.LIGHTNING,
+                            dm.isDeviceTurnedOn(), dm.getDeviceSeekerValue(), rm.getRoomName());
+                    lightnings.getDeviceList().add(d);
+                    room.getDeviceList().add(d);
+                } else if (dm.getDeviceType().equals("MusicDevice")) {
+                    MusicDevice d = new MusicDevice(dm.getDeviceID(), dm.getDeviceName(), dm.getDeviceMAC(), DeviceType.MUSIC,
+                            dm.isDeviceTurnedOn(), dm.getDeviceSeekerValue(), rm.getRoomName());
+                    musics.getDeviceList().add(d);
+                    room.getDeviceList().add(d);
+                } else if (dm.getDeviceType().equals("StoveDevice")) {
+                    StoveDevice d = new StoveDevice(dm.getDeviceID(), dm.getDeviceName(), dm.getDeviceMAC(), DeviceType.STOVE,
+                            dm.isDeviceTurnedOn(), dm.getDeviceSeekerValue(), rm.getRoomName());
+                    stoves.getDeviceList().add(d);
+                    room.getDeviceList().add(d);
+                } else if (dm.getDeviceType().equals("WindowDevice")) {
+                    WindowDevice d = new WindowDevice(dm.getDeviceID(), dm.getDeviceName(), dm.getDeviceMAC(), DeviceType.WINDOW,
+                            dm.isDeviceTurnedOn(), dm.getDeviceSeekerValue(), rm.getRoomName());
+                    windows.getDeviceList().add(d);
+                    room.getDeviceList().add(d);
+                }
+            }
+            rooms.add(room);
+        }
+        types.add(alarms);
+        types.add(cameras);
+        types.add(doors);
+        types.add(heatings);
+        types.add(lightnings);
+        types.add(musics);
+        types.add(stoves);
+        types.add(windows);
+    }
+
+    /**
      * Requests userdata from webservice and saves it into database
      */
-    private void loadUserdataFirstTime() {
+    private void getUserdataFirstTime() {
             SharedPreferences prefs = getSharedPreferences("livesmart.com", Context.MODE_PRIVATE);
             int userIdSharedPref = prefs.getInt("livesmart.com.userId", -1);
 
@@ -97,9 +183,15 @@ public class LiveSmartMain extends AppCompatActivity{
             callGetUserDataById.enqueue(new Callback<UserPOJO>() {
                 @Override
                 public void onResponse(Call<UserPOJO> call, Response<UserPOJO> response) {
-                    UserPOJO callResponse = response.body();
+                    Log.d("LiveSmartMain", "callGetUserDataById successful");
+                    UserPOJO userCallResponse = response.body();
                     //Write userData into database
-                    // writeUserdataToDatabase(callResponse);
+                    writeUserdataToDatabase(userCallResponse);
+                    /** Recreate whole activity with saved data */
+                    Intent intent = getIntent();
+                    intent.putExtra("FIRSTLOGIN", false);
+                    finish();
+                    startActivity(intent);
                 }
 
                 @Override
@@ -127,7 +219,7 @@ public class LiveSmartMain extends AppCompatActivity{
                 dm.setDeviceID(device.getDeviceID());
                 dm.setDeviceName(device.getDeviceName());
                 dm.setDeviceMAC(device.getDeviceMAC());
-                dm.setDeviceType(device.getClass().toString());
+                dm.setDeviceType(device.getClass().getSimpleName());
                 dm.setDeviceTurnedOn(device.isDeviceTurnedOn());
                 dm.setDeviceSeekerValue(device.getDeviceSeekerValue());
                 dm.roomModel = rm;
@@ -202,14 +294,12 @@ public class LiveSmartMain extends AppCompatActivity{
         h1.setDeviceName("Bathroom Heating");
         h1.setDeviceType(DeviceType.HEATING);
         h1.setRoomName(bathroom.getRoomName());
-        h1.setCurrentTemp(26);
 
         HeatingDevice h2 = new HeatingDevice();
         h2.setDeviceID(2);
         h2.setDeviceMAC("00:80:41:ae:fd:7e");
         h2.setDeviceName("Kitchen Heating");
         h2.setDeviceType(DeviceType.HEATING);
-        h2.setCurrentTemp(26);
         h2.setRoomName(kitchen.getRoomName());
 
         LightningDevice l1 = new LightningDevice();
@@ -226,11 +316,11 @@ public class LiveSmartMain extends AppCompatActivity{
         m1.setDeviceType(DeviceType.MUSIC);
         m1.setRoomName(bathroom.getRoomName());
 
-        StovenDevice s1 = new StovenDevice();
+        StoveDevice s1 = new StoveDevice();
         s1.setDeviceID(1);
         s1.setDeviceMAC("00:80:41:ae:fd:7e");
         s1.setDeviceName("Kitchen Stoven");
-        s1.setDeviceType(DeviceType.STOVEN);
+        s1.setDeviceType(DeviceType.STOVE);
         s1.setRoomName(kitchen.getRoomName());
         s1.setDeviceTurnedOn(true);
         s1.setDeviceSeekerValue(70);

@@ -10,7 +10,19 @@ public class TypeOverview implements Serializable {
 
     private int typesId;
     private String typesName;
+    private String icon_path;
     private ArrayList<Device> deviceList = new ArrayList<>();
+
+    /**
+     * Constructor
+     * @param typesId
+     * @param typesName
+     */
+    public TypeOverview(int typesId, String typesName, String icon_path) {
+        this.typesId = typesId;
+        this.typesName = typesName;
+        this.icon_path = icon_path;
+    }
 
     /**
      * Constructor
@@ -44,5 +56,13 @@ public class TypeOverview implements Serializable {
 
     public void setTypesId(int typesId) {
         this.typesId = typesId;
+    }
+
+    public String getIcon_path() {
+        return icon_path;
+    }
+
+    public void setIcon_path(String icon_path) {
+        this.icon_path = icon_path;
     }
 }

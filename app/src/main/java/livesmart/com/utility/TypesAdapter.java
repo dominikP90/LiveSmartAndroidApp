@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,9 +40,12 @@ public class TypesAdapter extends ArrayAdapter<TypeOverview> {
 
         // Lookup view for data population
         TextView typesName = (TextView) convertView.findViewById(R.id.typeName);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
 
         // Populate the data into the template view using the data object
         typesName.setText(type.getTypesName());
+        int imageId = context.getResources().getIdentifier(type.getIcon_path(), "drawable", context.getPackageName());
+        imageView.setImageDrawable(context.getResources().getDrawable(imageId));
 
 
         // Return the completed view to render on screen

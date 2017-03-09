@@ -34,7 +34,7 @@ public class RoomDevicesView extends AppCompatActivity {
         listView = (ListView)findViewById(R.id.listview);
 
         //Get Room from intent
-        Room roomIntent = (Room) getIntent().getSerializableExtra("ROOM");
+        final Room roomIntent = (Room) getIntent().getSerializableExtra("ROOM");
         //Set Actionbar
         getSupportActionBar().setTitle(roomIntent.getRoomName());
         //Create listview
@@ -45,7 +45,7 @@ public class RoomDevicesView extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
                 Device device = (Device) adapter.getItemAtPosition(position);
-                Toast.makeText(context, device.getDeviceName() + " selected", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, device.getDeviceName() + " selected...", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(context, RoomsDeviceDetailView.class);
                 intent.putExtra("DEVICE", device);
                 startActivity(intent);

@@ -19,7 +19,6 @@ import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 
 import livesmart.com.dataModel.AlarmDevice;
 import livesmart.com.dataModel.CameraDevice;
@@ -28,14 +27,13 @@ import livesmart.com.dataModel.DoorDevice;
 import livesmart.com.dataModel.HeatingDevice;
 import livesmart.com.dataModel.LightningDevice;
 import livesmart.com.dataModel.MusicDevice;
-import livesmart.com.dataModel.Room;
-import livesmart.com.dataModel.StovenDevice;
-import livesmart.com.dataModel.TypeOverview;
+import livesmart.com.dataModel.StoveDevice;
 import livesmart.com.dataModel.WindowDevice;
 import livesmart.com.restClient.LivesmartWebserviceInterface;
 import livesmart.com.restClient.LoginResponse;
 import livesmart.com.restClient.RuntimeTypeAdapterFactory;
-import livesmart.com.restClient.UserPOJO;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -119,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 t.printStackTrace();
+                Toast.makeText(getApplicationContext(),
+                        "Login-Error: Please try again!",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Initalize retrofit REST-webservice
      */
-    private Retrofit initalizeWebservice() {
+    public static Retrofit initalizeWebservice() {
         // Creates the json object which will manage the information received
         GsonBuilder builder = new GsonBuilder();
 
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 .registerSubtype(HeatingDevice.class, "HEATING")
                 .registerSubtype(LightningDevice.class, "LIGHTNING")
                 .registerSubtype(MusicDevice.class, "MUSIC")
-                .registerSubtype(StovenDevice.class, "STOVEN")
+                .registerSubtype(StoveDevice.class, "STOVEN")
                 .registerSubtype(WindowDevice.class, "WINDOW");
 
         builder.registerTypeAdapterFactory(typeFactory);
@@ -151,8 +151,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         Gson gson = builder.create();
+
+        //HttpClient with logger
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+        OkHttpClient httpClient = httpClientBuilder.addInterceptor(logging).build();
         //Create Retrofit instance with costume timestamp adapter
         retrofit = new Retrofit.Builder()
+                .client(httpClient)
                 .baseUrl(SERVER_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();

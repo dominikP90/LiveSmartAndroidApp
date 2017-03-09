@@ -16,8 +16,6 @@ import livesmart.com.dataModel.Room;
 import livesmart.com.dataModel.User;
 import livesmart.com.main.R;
 
-import static livesmart.com.main.LiveSmartMain.rooms;
-
 /**
  * Created by Dominik Poppek on 18.12.2016.
  */
