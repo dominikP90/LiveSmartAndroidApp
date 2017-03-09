@@ -43,6 +43,7 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
     compile 'com.google.code.gson:gson:2.6.1'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    compile 'com.crystal:crystalrangeseekbar:1.1.1'
 
     testCompile 'junit:junit:4.12'
     compile files('libs/activation.jar')
