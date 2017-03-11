@@ -1,5 +1,6 @@
 package livesmart.com.restClient;
 
+import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -35,6 +36,11 @@ public interface LivesmartWebserviceInterface {
     @FormUrlEncoded
     @PUT("LiveSmartWebService/rest/livesmart/device/switch")
     Call<SwitchResponse> switchOnOffDeviceById(@Field("deviceId") int deviceId, @Field("newState")boolean newState);
+
+    /** Chasnge device seeker value */
+    @FormUrlEncoded
+    @PUT("LiveSmartWebService/rest/livesmart/device/seeker")
+    Call<SwitchResponse> changeSeekerValueDeviceById(@Field("deviceId") int deviceId, @Field("newValue")int newValue);
 
 
     public static final Retrofit retrofit = new Retrofit.Builder()

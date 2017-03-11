@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:background="#B0E0E6">
+    android:background="#FFFFFF"
+    android:id="@+id/device_detail_view_rel_layout">
 
     <android.support.v7.widget.SwitchCompat
         android:theme="@style/SwitchCompatTheme"
@@ -39,11 +40,49 @@
         android:textSize="20sp"
         android:paddingTop="20dip"
         android:paddingBottom="20dip"/>
+    <!-- SeekBar -->
 
-    <com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
+    <TextView
+        android:id="@+id/minValue"
+        android:text="0"
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/seekBar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@id/seekBar"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/maxValue"
+        android:text="100"
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/seekBar"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/seekBar"
+        android:gravity="center" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/deviceSeekbarText"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:max="100"
+        android:progressDrawable="@drawable/blue_scrubber_progress"
+        android:theme="@style/SeekBarTheme"
+        />
+ <!--   <com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
         android:id="@+id/rangeSeekbar1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/maxValue"
+        android:layout_toRightOf="@id/minValue"
         android:layout_below="@+id/deviceSeekbarText"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -53,23 +92,21 @@
         app:bar_color="#48365164"
         app:bar_highlight_color="@color/colorPrimaryDark"
         app:left_thumb_color="@color/colorPrimaryDark"
-        app:left_thumb_color_pressed="@color/colorPrimaryDark"/>
+        app:left_thumb_color_pressed="@color/colorPrimaryDark"/> -->
 
- <!--   <SeekBar
-        android:id="@+id/seekBar"
+    <TextView
+        android:id="@+id/currentValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/rangeSeekbar1"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:max="100"
-        android:theme="@style/SeekBarTheme" /> -->
+        android:layout_below="@id/seekBar"
+        android:text="47"
+        android:textColor="#000000"
+        android:gravity="center" />
+
 
     <include layout="@layout/device_detail_data_table"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rangeSeekbar1"/>
+        android:layout_below="@+id/currentValue"/>
 
 </RelativeLayout>

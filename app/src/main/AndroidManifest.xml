@@ -24,7 +24,8 @@
             android:value="1" />
 
         <!-- Activities -->
-        <activity android:name="livesmart.com.main.MainActivity">
+        <activity android:name="livesmart.com.main.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,12 +33,14 @@
             </intent-filter>
         </activity>
         <activity android:name="livesmart.com.main.LiveSmartMain"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/MyMaterialTheme"
             android:launchMode="singleTop">
         </activity>
         <!-- List of rooms -->
         <activity android:name="livesmart.com.main.RoomDevicesView"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             android:parentActivityName="livesmart.com.main.LiveSmartMain">
@@ -47,6 +50,7 @@
         </activity>
         <!-- List of types -->
         <activity android:name="livesmart.com.main.TypeDevicesView"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             android:parentActivityName="livesmart.com.main.LiveSmartMain">
@@ -56,6 +60,7 @@
         </activity>
         <!-- Device detail view from rooms-->
         <activity android:name="livesmart.com.main.RoomsDeviceDetailView"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             android:parentActivityName="livesmart.com.main.RoomDevicesView">
@@ -65,6 +70,7 @@
          </activity>
         <!-- Device detail view from types-->
         <activity android:name="livesmart.com.main.TypesDeviceDetailView"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             android:parentActivityName="livesmart.com.main.TypeDevicesView">
@@ -74,6 +80,7 @@
         </activity>
         <!-- Notification detail view -->
         <activity android:name="livesmart.com.main.NotificationDetailView"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             android:parentActivityName="livesmart.com.main.LiveSmartMain">

@@ -8,6 +8,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import livesmart.com.dataModel.TypeOverview;
 import livesmart.com.databaseAccess.DeviceModel;
 import livesmart.com.restClient.LivesmartWebserviceInterface;
 import livesmart.com.restClient.SwitchResponse;
+import livesmart.com.utility.UpdateGlobalArrays;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,14 +37,20 @@ public class TypesDeviceDetailView extends AppCompatActivity{
 
     private Device deviceIntent;
     private SwitchCompat switchButton;
+    private SeekBar seekBar;
+    private TextView seekBarCurrentValue;
+
+    private LivesmartWebserviceInterface livesmartWebservice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.device_detail_view);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //Set Actionbar title
         getSupportActionBar().setTitle("Device Detail");
+
+        //Setup webservice
+        livesmartWebservice = retrofit.create(LivesmartWebserviceInterface.class);
 
         //Device from RoomDevicesView
         deviceIntent = (Device) getIntent().getSerializableExtra("DEVICE");
@@ -81,16 +89,74 @@ public class TypesDeviceDetailView extends AppCompatActivity{
             }
         });
 
+        /** Seekbar */
+        seekBar = (SeekBar)findViewById(R.id.seekBar);
+        seekBar.setProgress(deviceIntent.getDeviceSeekerValue());
+        seekBarCurrentValue = (TextView) findViewById(R.id.currentValue);
+        seekBarCurrentValue.setText(deviceIntent.getDeviceSeekerValue() + "");
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int newProgressValue, boolean fromUser) {
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d("RoomsDeviceDetailView", "SeekerValueOnClick: " + seekBar.getProgress());
+                changeSeekBarValue(seekBar.getProgress());
+            }
+        });
     }
 
+    /**
+     * Calling webservice to change seeker value on the device
+     * On success change and write to database
+     * @param newProgressValue
+     */
+    private void changeSeekBarValue(final int newProgressValue) {
+        Call<SwitchResponse> callSeekerDevice = livesmartWebservice.changeSeekerValueDeviceById(deviceIntent.getDeviceID(), newProgressValue);
+
+        callSeekerDevice.enqueue(new Callback<SwitchResponse>() {
+            @Override
+            public void onResponse(Call<SwitchResponse> call, Response<SwitchResponse> response) {
+                Log.d("RoomsDeviceDetailView", "Successfull seekBar call!");
+                if (response.code() == 200) {
+                    //update device in db
+                    Log.d("RoomsDeviceDetailView", "SeekerOnSuccess1: " + seekBar.getProgress());
+                    seekBar.setProgress(newProgressValue);
+                    seekBarCurrentValue.setText(newProgressValue + "");
+                    DeviceModel dm = new Select().from(DeviceModel.class).where("deviceId = ?", deviceIntent.getDeviceID()).executeSingle();
+                    dm.setDeviceSeekerValue(newProgressValue);
+                    dm.save();
+                    deviceIntent.setDeviceSeekerValue(newProgressValue);
+                    Log.d("RoomsDeviceDetailView", "SeekerOnSuccess1: " + seekBar.getProgress());
+                    Log.d("RoomsDeviceDetailView", "DeviceState1: " + deviceIntent.getDeviceSeekerValue());
+                    //Update global type + rooms list
+                    UpdateGlobalArrays.updateGlobalArrayListsForSeeker(deviceIntent, newProgressValue);
+                    Log.d("RoomsDeviceDetailView", "Global lists updated!");
+                } else {
+                    seekBar.setProgress(deviceIntent.getDeviceSeekerValue());
+                    Log.d("RoomsDeviceDetailView", "SwitchbuttonState2-ServerError: " + switchButton.isChecked());
+                    Toast.makeText(TypesDeviceDetailView.this,
+                            "Server-Error: Slider wasn't changed!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<SwitchResponse> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(TypesDeviceDetailView.this,
+                        "Server-Error: Slider wasn't changed!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     /**
      * Calling webservice to switch on/off the device
      * On success switch and write to database
      * @param newState
      */
     private void switchDeviceOnOff(final boolean newState) {
-        LivesmartWebserviceInterface livesmartWebservice = retrofit.create(LivesmartWebserviceInterface.class);
-
         Call<SwitchResponse> callSwitchDevice = livesmartWebservice.switchOnOffDeviceById(deviceIntent.getDeviceID(), newState);
 
         callSwitchDevice.enqueue(new Callback<SwitchResponse>() {
@@ -112,6 +178,7 @@ public class TypesDeviceDetailView extends AppCompatActivity{
                     updateGlobalArrayLists(newState);
                     Log.d("TypesDeviceDetailView", "Global lists updated!");
                 } else {
+                    //   seekbar.set
                     switchButton.setChecked(!newState);
                     Log.d("TypesDeviceDetailView", "SwitchbuttonState2-ServerError: " + switchButton.isChecked());
                     if (newState == true) {
@@ -131,6 +198,28 @@ public class TypesDeviceDetailView extends AppCompatActivity{
         });
     }
 
+    private void changeDeviceSeekerValue(int newValue) {
+        LivesmartWebserviceInterface livesmartWebservice = retrofit.create(LivesmartWebserviceInterface.class);
+        Call<SwitchResponse> callSwitchDevice = livesmartWebservice.changeSeekerValueDeviceById(deviceIntent.getDeviceID(), newValue);
+
+        callSwitchDevice.enqueue(new Callback<SwitchResponse>() {
+
+            @Override
+            public void onResponse(Call<SwitchResponse> call, Response<SwitchResponse> response) {
+            }
+
+            @Override
+            public void onFailure(Call<SwitchResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    /**
+     * When device gets updated, populate update to global lists rooms, types
+     * @param newState
+     */
     private void updateGlobalArrayLists(boolean newState) {
         //Types
         if(deviceIntent.getDeviceType().equals("AlarmDevice")) {

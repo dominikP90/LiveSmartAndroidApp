@@ -62,11 +62,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void onClickProcessLogin(View view) {
+        initalizeWebservice();
+        Intent intent = new Intent(getApplicationContext(), LiveSmartMain.class);
+        intent.putExtra("FIRSTLOGIN", false);
+        startActivity(intent);
+    }
+
     /**
      * Validates login after login-button was pressed
      * @param view
      */
-    public void onClickProcessLogin(View view) {
+    public void onClickProcessLogin2(View view) {
         EditText enterUsername = (EditText)findViewById(R.id.editTextUsername);
         EditText enterPassword = (EditText)findViewById(R.id.editTextPassword);
 
