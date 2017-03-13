@@ -60,7 +60,6 @@ public class TypesFragment extends ListFragment implements AdapterView.OnItemCli
         if (isVisibleToUser && !firstCreated) {
             typesAdapter = new TypesAdapter(getActivity(), android.R.layout.simple_list_item_1, types);
             setListAdapter(typesAdapter);
-            getListView().setOnItemClickListener(this);
         }
     }
 }

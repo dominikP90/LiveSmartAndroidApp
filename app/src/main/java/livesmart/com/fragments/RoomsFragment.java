@@ -63,7 +63,6 @@ public class RoomsFragment extends ListFragment implements AdapterView.OnItemCli
         if (isVisibleToUser & !firstCreated) {
             roomsAdapter = new RoomsAdapter(getActivity(), android.R.layout.simple_list_item_1, rooms);
             setListAdapter(roomsAdapter);
-            getListView().setOnItemClickListener(this);
         }
 
     }
