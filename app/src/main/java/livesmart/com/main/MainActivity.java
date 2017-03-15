@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -33,6 +35,7 @@ import livesmart.com.restClient.LivesmartWebserviceInterface;
 import livesmart.com.restClient.LoginResponse;
 import livesmart.com.restClient.RuntimeTypeAdapterFactory;
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * TestLogin without Username + pw + server call
+     * @param view
+     */
     public void onClickProcessLogin(View view) {
         initalizeWebservice();
         Intent intent = new Intent(getApplicationContext(), LiveSmartMain.class);
@@ -109,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
                                 "Login successful. Redirecting...",Toast.LENGTH_SHORT).show();
                         intent.putExtra("FIRSTLOGIN", false);
                     }
+                    //Send firebase token
+                    sendFirebaseTokenToServer();
 
                     //Save userId
                     prefs.edit().putInt("livesmart.com.userId", userIdcallResponse).commit();
@@ -130,6 +139,32 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Sending firebase token to server
+     */
+    private void sendFirebaseTokenToServer() {
+        SharedPreferences prefs = getSharedPreferences("livesmart.com", Context.MODE_PRIVATE);
+        int userIdSharedPref = prefs.getInt("livesmart.com.userId", -1);
+
+        if(userIdSharedPref != -1) {
+            LivesmartWebserviceInterface livesmartWebservice = retrofit.create(LivesmartWebserviceInterface.class);
+            // Create a call instance to send Firebase token to server
+            Call<ResponseBody> call = livesmartWebservice.sendFirebaseTokenToServer(userIdSharedPref, FirebaseInstanceId.getInstance().getToken());
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.code() == 200) {
+                        Log.d("MainActivity", "Sending firebase token successfull!");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
+    }
     /**
      * Initalize retrofit REST-webservice
      */

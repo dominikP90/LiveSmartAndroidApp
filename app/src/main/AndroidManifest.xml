@@ -89,6 +89,17 @@
                 android:value="livesmart.com.main.LiveSmartMain" />
         </activity>
 
+        <!-- Notification advanced details view -->
+        <activity android:name="livesmart.com.main.AdvancedNotificationDetailsView"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
+            android:parentActivityName="livesmart.com.main.LiveSmartMain">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="livesmart.com.main.NotificationDetailView" />
+        </activity>
+
         <!-- [START firebase_service] -->
         <service
             android:name="livesmart.com.messaging.MyFirebaseMessagingService">

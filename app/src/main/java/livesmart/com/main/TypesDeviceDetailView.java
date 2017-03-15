@@ -104,7 +104,7 @@ public class TypesDeviceDetailView extends AppCompatActivity{
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Log.d("RoomsDeviceDetailView", "SeekerValueOnClick: " + seekBar.getProgress());
+                Log.d("TypesDeviceDetailView", "SeekerValueOnClick: " + seekBar.getProgress());
                 changeSeekBarValue(seekBar.getProgress());
             }
         });
@@ -121,24 +121,24 @@ public class TypesDeviceDetailView extends AppCompatActivity{
         callSeekerDevice.enqueue(new Callback<SwitchResponse>() {
             @Override
             public void onResponse(Call<SwitchResponse> call, Response<SwitchResponse> response) {
-                Log.d("RoomsDeviceDetailView", "Successfull seekBar call!");
+                Log.d("TypesDeviceDetailView", "Successfull seekBar call!");
                 if (response.code() == 200) {
                     //update device in db
-                    Log.d("RoomsDeviceDetailView", "SeekerOnSuccess1: " + seekBar.getProgress());
+                    Log.d("TypesDeviceDetailView", "SeekerOnSuccess1: " + seekBar.getProgress());
                     seekBar.setProgress(newProgressValue);
                     seekBarCurrentValue.setText(newProgressValue + "");
                     DeviceModel dm = new Select().from(DeviceModel.class).where("deviceId = ?", deviceIntent.getDeviceID()).executeSingle();
                     dm.setDeviceSeekerValue(newProgressValue);
                     dm.save();
                     deviceIntent.setDeviceSeekerValue(newProgressValue);
-                    Log.d("RoomsDeviceDetailView", "SeekerOnSuccess1: " + seekBar.getProgress());
-                    Log.d("RoomsDeviceDetailView", "DeviceState1: " + deviceIntent.getDeviceSeekerValue());
+                    Log.d("TypesDeviceDetailView", "SeekerOnSuccess1: " + seekBar.getProgress());
+                    Log.d("TypesDeviceDetailView", "DeviceState1: " + deviceIntent.getDeviceSeekerValue());
                     //Update global type + rooms list
                     UpdateGlobalArrays.updateGlobalArrayListsForSeeker(deviceIntent, newProgressValue);
-                    Log.d("RoomsDeviceDetailView", "Global lists updated!");
+                    Log.d("TypesDeviceDetailView", "Global lists updated!");
                 } else {
                     seekBar.setProgress(deviceIntent.getDeviceSeekerValue());
-                    Log.d("RoomsDeviceDetailView", "SwitchbuttonState2-ServerError: " + switchButton.isChecked());
+                    Log.d("TypesDeviceDetailView", "SwitchbuttonState2-ServerError: " + switchButton.isChecked());
                     Toast.makeText(TypesDeviceDetailView.this,
                             "Server-Error: Slider wasn't changed!", Toast.LENGTH_SHORT).show();
                 }
@@ -175,7 +175,7 @@ public class TypesDeviceDetailView extends AppCompatActivity{
                     Log.d("TypesDeviceDetailView", "SwitchbuttonState3: " + switchButton.isChecked());
                     Log.d("TypesDeviceDetailView", "DeviceState1: " + deviceIntent.isDeviceTurnedOn());
                     //Update global type + rooms list
-                    updateGlobalArrayLists(newState);
+                    UpdateGlobalArrays.updateGlobalArrayListsForSwitch(deviceIntent, newState);
                     Log.d("TypesDeviceDetailView", "Global lists updated!");
                 } else {
                     //   seekbar.set
@@ -197,100 +197,6 @@ public class TypesDeviceDetailView extends AppCompatActivity{
             }
         });
     }
-
-    private void changeDeviceSeekerValue(int newValue) {
-        LivesmartWebserviceInterface livesmartWebservice = retrofit.create(LivesmartWebserviceInterface.class);
-        Call<SwitchResponse> callSwitchDevice = livesmartWebservice.changeSeekerValueDeviceById(deviceIntent.getDeviceID(), newValue);
-
-        callSwitchDevice.enqueue(new Callback<SwitchResponse>() {
-
-            @Override
-            public void onResponse(Call<SwitchResponse> call, Response<SwitchResponse> response) {
-            }
-
-            @Override
-            public void onFailure(Call<SwitchResponse> call, Throwable t) {
-
-            }
-        });
-    }
-
-
-    /**
-     * When device gets updated, populate update to global lists rooms, types
-     * @param newState
-     */
-    private void updateGlobalArrayLists(boolean newState) {
-        //Types
-        if(deviceIntent.getDeviceType().equals("AlarmDevice")) {
-            TypeOverview alarms = types.get(0);
-            for (Device d : alarms.getDeviceList()) {
-                if(d.getDeviceID() == deviceIntent.getDeviceID()) {
-                    d.setDeviceTurnedOn(newState);
-                }
-            }
-        } else if(deviceIntent.getDeviceType().equals("CameraDevice")) {
-            TypeOverview alarms = types.get(1);
-            for (Device d : alarms.getDeviceList()) {
-                if (d.getDeviceID() == deviceIntent.getDeviceID()) {
-                    d.setDeviceTurnedOn(newState);
-                }
-            }
-        }else if(deviceIntent.getDeviceType().equals("DoorDevice")) {
-            TypeOverview alarms = types.get(2);
-            for (Device d : alarms.getDeviceList()) {
-                if (d.getDeviceID() == deviceIntent.getDeviceID()) {
-                    d.setDeviceTurnedOn(newState);
-                }
-            }
-        }else if(deviceIntent.getDeviceType().equals("HeatingDevice")) {
-            TypeOverview alarms = types.get(3);
-            for (Device d : alarms.getDeviceList()) {
-                if (d.getDeviceID() == deviceIntent.getDeviceID()) {
-                    d.setDeviceTurnedOn(newState);
-                }
-            }
-        }else if(deviceIntent.getDeviceType().equals("LightningDevice")) {
-            TypeOverview alarms = types.get(4);
-            for (Device d : alarms.getDeviceList()) {
-                if (d.getDeviceID() == deviceIntent.getDeviceID()) {
-                    d.setDeviceTurnedOn(newState);
-                }
-            }
-        }else if(deviceIntent.getDeviceType().equals("MusicDevice")) {
-            TypeOverview alarms = types.get(5);
-            for (Device d : alarms.getDeviceList()) {
-                if (d.getDeviceID() == deviceIntent.getDeviceID()) {
-                    d.setDeviceTurnedOn(newState);
-                }
-            }
-        }else if(deviceIntent.getDeviceType().equals("StoveDevice")) {
-            TypeOverview alarms = types.get(6);
-            for (Device d : alarms.getDeviceList()) {
-                if (d.getDeviceID() == deviceIntent.getDeviceID()) {
-                    d.setDeviceTurnedOn(newState);
-                }
-            }
-        }else if(deviceIntent.getDeviceType().equals("WindowDevice")) {
-            TypeOverview alarms = types.get(7);
-            for (Device d : alarms.getDeviceList()) {
-                if (d.getDeviceID() == deviceIntent.getDeviceID()) {
-                    d.setDeviceTurnedOn(newState);
-                }
-            }
-        }
-        //Rooms
-        for (Room r : rooms) {
-            if (r.getRoomName().equals(deviceIntent.getRoomName())) {
-                for (Device d : r.getDeviceList()) {
-                    if (d.getDeviceID() == deviceIntent.getDeviceID()) {
-                        d.setDeviceTurnedOn(newState);
-                    }
-                }
-            }
-        }
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

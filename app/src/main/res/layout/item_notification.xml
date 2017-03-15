@@ -4,7 +4,8 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical">
 
-<LinearLayout
+    <!-- Notifcication Text -->
+<LinearLayout android:id="@+id/notificationHeader"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -40,7 +41,5 @@ android:orientation="vertical">
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
     android:paddingLeft="?android:attr/listPreferredItemPaddingLeft" />
-
-
 </LinearLayout>
 

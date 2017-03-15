@@ -30,18 +30,20 @@ public interface LivesmartWebserviceInterface {
     @retrofit2.http.GET("LiveSmartWebService/rest/livesmart/user/{userId}")
     Call<UserPOJO> getUserbyUserId(@Path("userId") int userId);
 
-
-
     /** Switch device on/off */
     @FormUrlEncoded
     @PUT("LiveSmartWebService/rest/livesmart/device/switch")
     Call<SwitchResponse> switchOnOffDeviceById(@Field("deviceId") int deviceId, @Field("newState")boolean newState);
 
-    /** Chasnge device seeker value */
+    /** Change device seeker value */
     @FormUrlEncoded
     @PUT("LiveSmartWebService/rest/livesmart/device/seeker")
     Call<SwitchResponse> changeSeekerValueDeviceById(@Field("deviceId") int deviceId, @Field("newValue")int newValue);
 
+    /** Change device seeker value */
+    @FormUrlEncoded
+    @PUT("LiveSmartWebService/rest/livesmart/registerKey")
+    Call<ResponseBody> sendFirebaseTokenToServer(@Field("userId") int userId, @Field("firebaseKey")String firebaseToken);
 
     public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(SERVER_URL)
