@@ -10,15 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
-import livesmart.com.dataModel.DeviceType;
-import livesmart.com.dataModel.LightningDevice;
-import livesmart.com.dataModel.Notification;
-import livesmart.com.dataModel.Severity;
 import livesmart.com.main.NotificationDetailView;
 import livesmart.com.main.R;
 import livesmart.com.utility.NotificationAdapter;

@@ -6,13 +6,13 @@ import java.io.Serializable;
  * Created by Dominik Poppek on 16.12.2016.
  */
 
-public class LightningDevice extends Device implements Serializable {
+public class LightingDevice extends Device implements Serializable {
     private final String iconPath = "ic_lightbulb_outline_black_18dp";
 
-    public LightningDevice() {}
+    public LightingDevice() {}
 
-    public LightningDevice(int deviceID, String deviceName, String deviceMAC, DeviceType deviceType, boolean deviceTurnedOn,
-                           int deviceSeekerValue, String roomName) {
+    public LightingDevice(int deviceID, String deviceName, String deviceMAC, DeviceType deviceType, boolean deviceTurnedOn,
+                          int deviceSeekerValue, String roomName) {
         this.setDeviceID(deviceID);
         this.setDeviceName(deviceName);
         this.setDeviceMAC(deviceMAC);

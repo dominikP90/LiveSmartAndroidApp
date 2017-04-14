@@ -25,7 +25,7 @@ import livesmart.com.dataModel.Device;
 import livesmart.com.dataModel.DeviceType;
 import livesmart.com.dataModel.DoorDevice;
 import livesmart.com.dataModel.HeatingDevice;
-import livesmart.com.dataModel.LightningDevice;
+import livesmart.com.dataModel.LightingDevice;
 import livesmart.com.dataModel.MusicDevice;
 import livesmart.com.dataModel.Notification;
 import livesmart.com.dataModel.Room;
@@ -134,8 +134,8 @@ public class LiveSmartMain extends AppCompatActivity{
                             dm.isDeviceTurnedOn(), dm.getDeviceSeekerValue(), rm.getRoomName());
                     heatings.getDeviceList().add(d);
                     room.getDeviceList().add(d);
-                } else if (dm.getDeviceType().equals("LightningDevice")) {
-                    LightningDevice d = new LightningDevice(dm.getDeviceID(), dm.getDeviceName(), dm.getDeviceMAC(), DeviceType.LIGHTNING,
+                } else if (dm.getDeviceType().equals("LightingDevice")) {
+                    LightingDevice d = new LightingDevice(dm.getDeviceID(), dm.getDeviceName(), dm.getDeviceMAC(), DeviceType.LIGHTNING,
                             dm.isDeviceTurnedOn(), dm.getDeviceSeekerValue(), rm.getRoomName());
                     lightnings.getDeviceList().add(d);
                     room.getDeviceList().add(d);
@@ -302,7 +302,7 @@ public class LiveSmartMain extends AppCompatActivity{
         h2.setDeviceType(DeviceType.HEATING);
         h2.setRoomName(kitchen.getRoomName());
 
-        LightningDevice l1 = new LightningDevice();
+        LightingDevice l1 = new LightingDevice();
         l1.setDeviceID(3);
         l1.setDeviceMAC("00:80:41:ae:fd:7e");
         l1.setDeviceName("Bathroom Lightning");

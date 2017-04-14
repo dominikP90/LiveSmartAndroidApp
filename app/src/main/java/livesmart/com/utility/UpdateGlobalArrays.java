@@ -48,7 +48,7 @@ public class UpdateGlobalArrays {
                     d.setDeviceTurnedOn(newState);
                 }
             }
-        }else if(deviceIntent.getDeviceType().equals("LightningDevice")) {
+        }else if(deviceIntent.getDeviceType().equals("LightingDevice")) {
             TypeOverview alarms = types.get(4);
             for (Device d : alarms.getDeviceList()) {
                 if (d.getDeviceID() == deviceIntent.getDeviceID()) {
@@ -124,7 +124,7 @@ public class UpdateGlobalArrays {
                     d.setDeviceSeekerValue(newProgressValue);
                 }
             }
-        }else if(deviceIntent.getDeviceType().equals("LightningDevice")) {
+        }else if(deviceIntent.getDeviceType().equals("LightingDevice")) {
             TypeOverview alarms = types.get(4);
             for (Device d : alarms.getDeviceList()) {
                 if (d.getDeviceID() == deviceIntent.getDeviceID()) {

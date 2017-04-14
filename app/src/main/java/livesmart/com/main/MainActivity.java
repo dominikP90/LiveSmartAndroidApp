@@ -27,7 +27,7 @@ import livesmart.com.dataModel.CameraDevice;
 import livesmart.com.dataModel.Device;
 import livesmart.com.dataModel.DoorDevice;
 import livesmart.com.dataModel.HeatingDevice;
-import livesmart.com.dataModel.LightningDevice;
+import livesmart.com.dataModel.LightingDevice;
 import livesmart.com.dataModel.MusicDevice;
 import livesmart.com.dataModel.StoveDevice;
 import livesmart.com.dataModel.WindowDevice;
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 .registerSubtype(CameraDevice.class, "CAMERA")
                 .registerSubtype(DoorDevice.class, "DOOR")
                 .registerSubtype(HeatingDevice.class, "HEATING")
-                .registerSubtype(LightningDevice.class, "LIGHTNING")
+                .registerSubtype(LightingDevice.class, "LIGHTING")
                 .registerSubtype(MusicDevice.class, "MUSIC")
                 .registerSubtype(StoveDevice.class, "STOVEN")
                 .registerSubtype(WindowDevice.class, "WINDOW");
